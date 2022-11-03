@@ -1,39 +1,44 @@
 #include <stdio.h>
 #include <string.h>
 
+#define NAMESIZE 20
+
 int main()
 {
     int n;
     scanf("%d", &n);
-    char strs[n*2][20];
+    char strs[n * 2][NAMESIZE];
 
     for (int i = 0; i < n * 2; i++)
     {
         scanf("%s", strs[i]);
     }
 
-    char people[n][39];
+    int j = 0;
+    short temp[n];
     for (int i = 0; i < n; i++)
     {
-        strcpy(people[i], strcat(strs[i], strs[i + n]));
-        printf("%s\n", people[i]);
+        temp[i] = 0;
     }
 
-    int j = 0;
-    int temp[n];
-
     for (int i = 0; i < n; i++)
     {
-        for (int q = 0; q < n; q++)
+        if (temp[i] != 1)
         {
-            if (people[i] == people[q] ) {
-                j++;
-                break;
+            for (int q = i + 1; q < n; q++)
+            {
+                // printf("p%d: %s %s, p%d: %s %s,   temp[%d]: %d, temp[%d]: %d\n", i, strs[i], strs[i+n], q, strs[q], strs[q+n], i, temp[i], q, temp[q]);
+                if (temp[q] != 1 && strcmp(strs[i], strs[q]) == 0 && strcmp(strs[i + n], strs[q + n]) == 0)
+                {
+                    j++;
+                    temp[q] = 1;
+                    // printf("tedst i: %d, q: %d\n", i, q);
+                }
             }
         }
     }
 
-    printf("%d", j);
+    printf("%d", n - j);
 
     int t;
     scanf("%d", &t);
