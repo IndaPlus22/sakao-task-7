@@ -7,40 +7,44 @@
 #define MAX 100001
 
 //alla dessa hash funktioner verkar inte vilja funka
-unsigned long hash(char *str)
-{
-    unsigned long hash = 5381;
-    int c;
+// unsigned long hash(char *str)
+// {
+//     unsigned long hash = 5381;
+//     int c;
 
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+//     while (c = *str++)
+//         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-    return hash % MAX;
-}
+//     return hash % MAX;
+// }
 
-unsigned long sdbm(char *str)
-{
-    unsigned long hash = 0;
-    int c;
+// unsigned long sdbm(char *str)
+// {
+//     unsigned long hash = 0;
+//     int c;
 
-    while (c = *str++)
-        hash = c + (hash << 6) + (hash << 16) - hash;
+//     while (c = *str++)
+//         hash = c + (hash << 6) + (hash << 16) - hash;
 
-    return hash % MAX;
-}
+//     return hash % MAX;
+// }
 
-unsigned hashkr(char *s)
-{
-    unsigned hashval;
+// unsigned hashkr(char *s)
+// {
+//     unsigned hashval;
 
-    for (hashval = 0; *s != '\0'; s++)
-        hashval = *s + 31*hashval;
-    return hashval % MAX;
+//     for (hashval = 0; *s != '\0'; s++)
+//         hashval = *s + 31*hashval;
+//     return hashval % MAX;
+// }
+
+int compare(const void* val1, const void* val2) {
+    return strcmp(val1, val2);
 }
 
 int main()
 {
-    int n;
+    unsigned int n;
     scanf("%d", &n);
     char strarr[n * 2][NAMESIZE];
     // char *strarr[n * 2];
@@ -54,65 +58,49 @@ int main()
         // strcpy(strarr[i], tmpstr);
     }
 
-    char people[n][NAMESIZE];
-    int j = 0;
+    char people[n][NAMESIZE*2];
+    unsigned int j = 0;
 
     for (int i = 0; i < n; i++)
     {
-        strcpy(people[i], strcat(strarr[i], strarr[i + n]));
+        strcpy(people[i], strcat( strcat(strarr[i], "."), strarr[i + n]) );
     }
 
-    int checks[MAX] = {0};
-    for (size_t i = 0; i < n; i++)
-    {
-        checks[hash(people[i])] = 1;
-        // printf("hello: %d\n", checks[hashkr(people[i])]);
-    }
+    // try qsort
+    qsort(people, n, NAMESIZE*2, compare);
 
-    for (int i = 0; i < MAX; i++)
+    for (int i = 0; i < n-1; i++)
     {
-        if (checks[i] == 1)
+        // printf("ok: %s, %s, comp: %d\n", people[i], people[i+1], strcmp(people[i], people[i+1]));
+        if (strcmp(people[i], people[i+1]) == 0) // not same
         {
-            // printf("checked yey\n");
             j++;
         }
     }
+    
 
-    printf("%d", j);
-
-    // printf("\n+++++++++++++++++++++++++++++++++++\n");
-
-    // short temp[n];
-    // for (int i = 0; i < n; i++)
+    // this is for hashing
+    // int checks[MAX] = {0};
+    // for (size_t i = 0; i < n; i++)
     // {
-    //     temp[i] = 0;
+    //     checks[hash(strarr[i])] = 1;
+    //     // printf("name: %s, hash: %d\n", people[i], hash(people[i]));
     // }
 
-    // for (int i = 0; i < n; i++)
+    // for (int i = 0; i < MAX; i++)
     // {
-    //     if (temp[i] != 1)
+    //     if (checks[i] == 1)
     //     {
-    //         for (int q = i + 1; q < n; q++)
-    //         {
-    //             // printf("p%d: %s %s, p%d: %s %s,   temp[%d]: %d, temp[%d]: %d\n", i, strs[i], strs[i+n], q, strs[q], strs[q+n], i, temp[i], q, temp[q]);
-    //             if (temp[q] != 1 && strcmp(strarr[i], strarr[q]) == 0 && strcmp(strarr[i + n], strarr[q + n]) == 0)
-    //             {
-    //                 j++;
-    //                 temp[q] = 1;
-    //                 // printf("tedst i: %d, q: %d\n", i, q);
-    //             }
-    //         }
+    //         // printf("checked yey\n");
+    //         j++;
     //     }
     // }
+    //-----------------------------------
 
-    // // for (int i = 0; i < n*2; i++)
-    // // {
-    // //     free(strarr[i]);
-    // // }
-    // // free(strarr);
+    printf("%d", n - j);
 
-    // printf("%d", n - j);
+    int t;
+    scanf("%d", &t);
 
-    // int t;
-    // scanf("%d", &t);
+    return 0;
 }
